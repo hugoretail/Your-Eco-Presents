@@ -101,6 +101,5 @@ copy .env.example .env   # sous Windows (cmd)
 
 - Numih France : [https://numihfrance.fr](https://numihfrance.fr)
 - Page carrière Numih France : [https://careers.werecruit.io/fr/numih-france](https://careers.werecruit.io/fr/numih-france)
-- Contact projet : `hello@eco-presents.com`
 
 Les sources sont disponibles dans ce dépôt Git et la plateforme en ligne reflète la dernière version de `main`, satisfaisant ainsi les livrables demandés par le défi « RSE by design ».

@@ -1,6 +1,0 @@
-# Ignore generated code and build artifacts
-src/generated/
-prisma/
-node_modules/
-out/
-.next/

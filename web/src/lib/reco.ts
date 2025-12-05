@@ -112,7 +112,6 @@ function scoreBudget(priceCents: number | null | undefined, min: number | null, 
   }
   if (min != null) {
     if (price >= min) return 1;
-    const dist = min - price;
     return clamp01(price / Math.max(1, min));
   }
   // max only
@@ -353,7 +352,7 @@ export function recommend(prefs: Prefs, products: RawProduct[], k = 5): Idea[] {
   // Parse and pre-filter exclusions strictly
   const parsedAll = products.map(p => ({ p, parsed: parseProduct(p) }));
   const giftCardExcluded = prefs.exclude.map(s=>normalize(s)).some(s => s.includes('carte') && s.includes('cadeau'));
-  const candidates = parsedAll.filter(({ p, parsed }) => {
+  const candidates = parsedAll.filter(({ parsed }) => {
     if (hasExcludedCategory(parsed.categories, prefs.exclude)) return false;
     if (giftCardExcluded && detectGiftCard(parsed)) return false;
     return true;
