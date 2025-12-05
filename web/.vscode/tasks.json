@@ -1,0 +1,13 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Prisma migrate & generate",
+			"type": "shell",
+			"command": "npm run prisma:migrate && npm run prisma:generate",
+			"problemMatcher": [
+				"$tsc"
+			]
+		}
+	]
+}

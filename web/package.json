@@ -1,0 +1,56 @@
+{
+  "name": "web",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev --turbopack",
+    "build": "next build --turbopack",
+    "build:vercel": "prisma generate && prisma migrate deploy && next build",
+    "build:pages": "next build",
+    "start": "next start",
+    "lint": "eslint",
+    "prisma:generate": "prisma generate",
+    "prisma:migrate": "prisma migrate dev",
+    "db:migrate:deploy": "prisma migrate deploy",
+    "db:seed": "prisma db seed",
+    "db:import:csv": "node scripts/importCsvProducts.js",
+    "db:import:csv:ts": "node --loader ts-node/esm scripts/importCsvProducts.ts",
+    "db:sync": "prisma migrate deploy && node scripts/importCsvProducts.js && node scripts/countProducts.js",
+  "db:sync:neon": "prisma migrate deploy && node scripts/importCsvProducts.js && node scripts/countProducts.js",
+  "db:sync:neon-env": "set DATABASE_URL=%NEON_DATABASE_URL%&& set SHADOW_DATABASE_URL=%NEON_SHADOW_DATABASE_URL%&& prisma migrate deploy && node scripts/importCsvProducts.js && node scripts/countProducts.js",
+  "db:sync:local": "set DATABASE_URL=%LOCAL_DATABASE_URL%&& set SHADOW_DATABASE_URL=%LOCAL_SHADOW_DATABASE_URL%&& prisma migrate deploy && node scripts/importCsvProducts.js && node scripts/countProducts.js",
+  "db:import:csv:sample": "set CSV_MAX=50&& node scripts/importCsvProducts.js",
+    "email:test": "node scripts/testEmail.js"
+  },
+  "prisma": {
+    "seed": "node prisma/seed.cjs"
+  },
+  "dependencies": {
+    "@heroicons/react": "^2.2.0",
+    "@prisma/client": "^6.16.3",
+    "bcrypt": "^6.0.0",
+    "csv-parse": "^6.1.0",
+    "framer-motion": "^12.23.24",
+    "jsonwebtoken": "^9.0.2",
+    "next": "15.5.4",
+    "nodemailer": "^7.0.9",
+    "prisma": "^6.16.3",
+    "react": "19.1.0",
+    "react-dom": "19.1.0",
+    "zod": "^4.1.12"
+  },
+  "devDependencies": {
+    "@eslint/eslintrc": "^3",
+    "@tailwindcss/postcss": "^4",
+    "@types/bcrypt": "^6.0.0",
+    "@types/node": "^20.19.19",
+    "@types/nodemailer": "^7.0.2",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "15.5.4",
+    "tailwindcss": "^4",
+    "ts-node": "^10.9.2",
+    "typescript": "^5"
+  }
+}

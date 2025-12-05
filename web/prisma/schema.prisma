@@ -1,0 +1,96 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+  shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
+}
+
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  passwordHash  String
+  role          UserRole  @default(USER)
+  confirmed     Boolean   @default(false)
+  confirmToken  String?
+  displayName   String?
+  preferences   String?   // JSON string for user preferences
+  newsletterOptIn Boolean @default(false)
+  articles      Article[]
+  sessions      Session[]
+  savedGifts    SavedGift[]
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+}
+
+enum UserRole {
+  USER
+  ADMIN
+}
+
+model Article {
+  id          String   @id @default(cuid())
+  title       String
+  slug        String   @unique
+  excerpt     String?
+  content     String   // markdown
+  coverImage  String?  // path or URL
+  sources     String?  // JSON array of sources
+  author      User     @relation(fields: [authorId], references: [id])
+  authorId    String
+  published   Boolean  @default(false)
+  publishedAt DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Product {
+  id          String   @id @default(cuid())
+  name        String
+  description String
+  brand       String?
+  url         String?
+  purchaseLinks String?  // JSON array of { label, url }
+  priceCents  Int?
+  currency    String?  @default("EUR")
+  labels      String?  // JSON array of eco labels
+  origin      String?  // FR/EU
+  materials   String?  // JSON array
+  repairScore Int?
+  packaging   String?
+  image       String?  // chemin statique vers l'image (ex: /products/velo.jpg)
+  keywords    String?  // JSON array of keywords
+  categories  String?  // JSON array of categories
+  popularity  Int?     // clicks or purchases count
+  ecoScore    Int?     // 0..100, derived
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  savedBy     SavedGift[]
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  user      User?    @relation(fields: [userId], references: [id])
+  userId    String?
+  token     String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+}
+
+model SavedGift {
+  id        String   @id @default(cuid())
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  product   Product  @relation(fields: [productId], references: [id])
+  productId String
+  note      String?
+  createdAt DateTime @default(now())
+
+  @@unique([userId, productId])
+}
