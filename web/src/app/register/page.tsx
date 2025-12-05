@@ -1,5 +1,4 @@
 "use client";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 export default function RegisterPage() {
@@ -9,7 +8,6 @@ export default function RegisterPage() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(false);
-  const router = useRouter();
 
   async function handleRegister(e: React.FormEvent) {
     e.preventDefault();
@@ -38,7 +36,7 @@ export default function RegisterPage() {
     }
     setSuccess("Compte créé ! Vérifiez vos mails pour confirmer votre adresse.");
     setEmail(""); setPassword(""); setConfirm("");
-    // Optionnel : router.push("/login");
+    // Optionnel : rediriger vers /login ici.
   }
 
   return (

@@ -1,5 +1,6 @@
 "use client";
 
+import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
@@ -67,7 +68,7 @@ export default function Nav() {
   <nav className="mx-auto flex w-full max-w-6xl items-center justify-between px-4 sm:px-6 py-3 text-sm">
       <div className="flex items-center gap-3">
         <Link href="/" className="flex items-center gap-2 group">
-            <img src="/logo.png" alt="Logo Eco-Presents" className="w-12 h-12 drop-shadow-sm group-hover:scale-105 transition" />
+            <Image src="/logo.png" alt="Logo Eco-Presents" width={48} height={48} className="w-12 h-12 drop-shadow-sm group-hover:scale-105 transition" />
           <span className="text-lg font-extrabold tracking-tight text-green-800">
             Eco‑Presents
           </span>
@@ -166,7 +167,7 @@ export default function Nav() {
             >
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                    <img src="/logo.png" alt="Eco-Presents" className="w-11 h-11" />
+                    <Image src="/logo.png" alt="Eco-Presents" width={44} height={44} className="w-11 h-11" />
                   <span className="font-bold text-lg text-green-800">Eco‑Presents</span>
                 </div>
                 <button onClick={()=>setOpen(false)} aria-label="Fermer" className="rounded-full bg-neutral-100 p-2 hover:bg-neutral-200 active:scale-95">✕</button>

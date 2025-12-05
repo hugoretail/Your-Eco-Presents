@@ -58,7 +58,6 @@ export default function TrouverPage() {
 	const [error, setError] = useState("");
 	const [loading, setLoading] = useState(false);
 	const [imageModal, setImageModal] = useState<{ product: any; idea: any } | null>(null);
-	const [productIndex] = useState<Map<string, any>>(new Map()); // placeholder pour compat
 	const [formError, setFormError] = useState("");
 
 	// Wizard
@@ -190,7 +189,7 @@ export default function TrouverPage() {
 				{demoMode && (
 					<div className="lg:col-span-3 order-1 -mt-2">
 						<div className="rounded-lg border border-amber-300 bg-amber-50 px-4 py-3 text-amber-800">
-							Démo statique: les appels IA/API sont désactivés sur GitHub Pages. L'interface est fidèle mais la génération ne fonctionne pas ici.
+							Démo statique: les appels IA/API sont désactivés sur GitHub Pages. L’interface est fidèle mais la génération ne fonctionne pas ici.
 						</div>
 					</div>
 				)}
@@ -209,7 +208,7 @@ export default function TrouverPage() {
 						{step === 0 && (
 							<div className="space-y-4">
 								<div className="space-y-1">
-									<label className="block text-sm font-bold mb-1">La personne à qui j'offre est :</label>
+									<label className="block text-sm font-bold mb-1">La personne à qui j’offre est :</label>
 									<select value={recipient} onChange={e=>setRecipient(e.target.value)} className="w-full rounded-lg border border-neutral-300 bg-white px-4 py-2 text-base focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition">
 										<option value="" disabled>Sélectionner…</option>
 										{RECIPIENT_OPTIONS.map(opt => <option key={opt} value={opt}>{opt}</option>)}
@@ -232,7 +231,9 @@ export default function TrouverPage() {
 									<label className="block text-sm font-bold mb-1">Âge (approx.)</label>
 									<input type="number" min="0" max="120" value={age} onChange={e=>setAge(e.target.value)} placeholder="Ex: 30" className="w-full rounded-lg border border-neutral-300 bg-white px-4 py-2 text-base placeholder:text-neutral-600 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition" />
 								</div>
-								<p className="text-xs text-neutral-500">Ces 3 premières infos nous permettent de cadrer le ton & la tranche d'idées.</p>
+								<p className="text-xs text-neutral-500">Ces 3 premières infos nous permettent de cadrer le ton & la tranche d’idées.</p>
+								<p className="text-xs text-neutral-500">On évite de te reproposer ce que tu as déjà en tête.</p>
+								<p className="text-xs text-neutral-500">Tu peux laisser vide si tu n’as rien de plus. Lance la recherche pour voir les idées.</p>
 							</div>
 						)}
 						{step === 1 && (
@@ -337,7 +338,7 @@ export default function TrouverPage() {
 									<label className="block text-sm font-bold mb-1">Infos sur la personne (cadeaux précédents…)</label>
 									<textarea value={personInfo} onChange={e=>setPersonInfo(e.target.value)} rows={2} placeholder="Cadeaux passés, anecdotes, contraintes…" className="w-full rounded-lg border border-neutral-300 bg-white px-4 py-2 text-base placeholder:text-neutral-600 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition" />
 								</div>
-								<p className="text-xs text-neutral-500">Tu peux laisser vide si tu n'as rien de plus. Lance la recherche pour voir les idées.</p>
+								<p className="text-xs text-neutral-500">Tu peux laisser vide si tu n’as rien de plus. Lance la recherche pour voir les idées.</p>
 							</div>
 						)}
 					</div>
@@ -449,6 +450,26 @@ export default function TrouverPage() {
 												{fmtPrice(prod, idea) && <span className="rounded-md bg-emerald-600/10 px-2 py-1 text-xs font-semibold text-emerald-700 border border-emerald-200">{fmtPrice(prod, idea)}</span>}
 												{prod.origin && <span className="rounded-md bg-neutral-100 px-2 py-1 text-[11px] font-medium text-neutral-600">Origine: {prod.origin}</span>}
 											</div>
+											{labels.length > 0 && (
+												<div>
+													<p className="text-[10px] font-semibold uppercase tracking-wide text-neutral-500">Labels repérés</p>
+													<div className="mt-1 flex flex-wrap gap-2">
+														{labels.map((label:string, index:number) => (
+															<span key={`${label}-${index}`} className="rounded-full bg-neutral-100 px-2 py-0.5 text-[11px] font-medium text-neutral-600">{label}</span>
+														))}
+													</div>
+												</div>
+											)}
+											{categories.length > 0 && (
+												<div>
+													<p className="text-[10px] font-semibold uppercase tracking-wide text-neutral-500">Catégories associées</p>
+													<div className="mt-1 flex flex-wrap gap-2">
+														{categories.map((category:string, index:number) => (
+															<span key={`${category}-${index}`} className="rounded-full bg-neutral-50 px-2 py-0.5 text-[11px] font-medium text-neutral-600">{category}</span>
+														))}
+													</div>
+												</div>
+											)}
 											{links.length > 0 && (
 												<div className="flex flex-wrap gap-3">
 													{links.slice(0,5).map((l,i) => (

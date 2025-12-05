@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 
 // Animation douce d'orbes flottants en canvas, sous le formulaire de /trouver.
 // Objectifs:
@@ -13,26 +13,13 @@ type Orb = { x: number; y: number; r: number; hue: number; alpha: number; vx: nu
 export default function BelowFoldAmbient() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const rafRef = useRef<number | null>(null);
-  const [reduced, setReduced] = useState(false);
-  const [force, setForce] = useState(false);
-
-  // Detect reduced-motion and allow user to force-enable
-  useEffect(() => {
-    const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
-    const handler = () => setReduced(mq.matches);
-    handler();
-    mq.addEventListener?.('change', handler);
-    // No override: always respect reduced motion
-    return () => mq.removeEventListener?.('change', handler);
-  }, []);
-
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
     const mqReduce = window.matchMedia('(prefers-reduced-motion: reduce)');
-    if (mqReduce.matches && !force) return; // respect reduced motion unless forced
+    if (mqReduce.matches) return; // respect reduced motion
 
     const DPR = Math.min(2, window.devicePixelRatio || 1);
     let width = window.innerWidth; // full-bleed = largeur viewport
@@ -155,14 +142,14 @@ export default function BelowFoldAmbient() {
   ctx.globalCompositeOperation = 'destination-out';
   // bas
   const fadeBottom = 140;
-  let gb = ctx.createLinearGradient(0, height - fadeBottom, 0, height);
+  const gb = ctx.createLinearGradient(0, height - fadeBottom, 0, height);
   gb.addColorStop(0, 'rgba(0,0,0,0)');
   gb.addColorStop(1, 'rgba(0,0,0,1)');
   ctx.fillStyle = gb;
   ctx.fillRect(0, height - fadeBottom, width, fadeBottom);
   // haut
   const fadeTop = 80;
-  let gt = ctx.createLinearGradient(0, 0, 0, fadeTop);
+  const gt = ctx.createLinearGradient(0, 0, 0, fadeTop);
   gt.addColorStop(0, 'rgba(0,0,0,1)');
   gt.addColorStop(1, 'rgba(0,0,0,0)');
   ctx.fillStyle = gt;
@@ -183,7 +170,7 @@ export default function BelowFoldAmbient() {
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
       window.removeEventListener('resize', resize);
     };
-  }, [force]);
+  }, []);
 
   return (
     <div className="relative mt-16 full-bleed">

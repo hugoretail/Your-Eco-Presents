@@ -21,7 +21,9 @@ export default function LoginPage() {
     const data = await res.json();
     if (!res.ok) { setError(data.error || 'Identifiants invalides'); return; }
   setSuccess(true);
-  typeof window!=='undefined' && window.dispatchEvent(new Event('auth-changed'));
+  if (typeof window !== 'undefined') {
+    window.dispatchEvent(new Event('auth-changed'));
+  }
     setRole(data.role || null);
     setTimeout(() => {
       if (data.role === 'ADMIN') router.push('/admin');

@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 
 export const dynamic = 'force-dynamic';
 
@@ -28,7 +28,7 @@ async function probe(endpoint: string, model: string) {
   }
 }
 
-export async function GET(_req: NextRequest) {
+export async function GET() {
   const primary = process.env.OLLAMA_ENDPOINT || 'http://localhost:11434/api/generate';
   const model = process.env.LLM_MODEL || 'mistral';
   const candidates = Array.from(new Set([

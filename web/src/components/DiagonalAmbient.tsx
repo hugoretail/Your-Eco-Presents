@@ -45,8 +45,8 @@ export default function DiagonalAmbient() {
     // Helper to draw a single static frame (for reduced motion without force)
     const drawStatic = () => {
       const DPR = Math.min(2, window.devicePixelRatio || 1);
-      let width = Math.floor(window.innerWidth * 1.4);
-      let height = Math.floor(Math.min(720, Math.max(420, window.innerHeight * 0.56)));
+      const width = Math.floor(window.innerWidth * 1.4);
+      const height = Math.floor(Math.min(720, Math.max(420, window.innerHeight * 0.56)));
       canvas.width = Math.floor(width * DPR);
       canvas.height = Math.floor(height * DPR);
       canvas.style.width = width + 'px';

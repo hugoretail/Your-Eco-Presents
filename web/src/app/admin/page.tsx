@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 interface ArticleFormState { title: string; slug: string; excerpt: string; content: string; published: boolean; sources: string; }
 interface ProductFormState { name: string; description: string; brand: string; url: string; priceCents: string; labels: string; origin: string; materials: string; repairScore: string; packaging: string; image: string; keywords: string; categories: string; popularity: string; ecoScore: string; }
@@ -50,7 +50,7 @@ export default function AdminPage() {
     setSlugManual(false);
   }
 
-  async function refreshLists() {
+  const refreshLists = useCallback(async () => {
     setLoadingArticles(true);
     const a = await fetch('/api/articles?all=1').then(r=>r.json()).catch(()=>({articles:[]}));
     setArticles(a.articles || []);
@@ -67,9 +67,9 @@ export default function AdminPage() {
     setProducts(p.products || []);
     setTotal(p.total || 0);
     setLoadingProducts(false);
-  }
+  }, [page, pageSize, productQuery, productFilterCat, productSort]);
 
-  useEffect(() => { if (session) refreshLists(); }, [session, page, pageSize, productQuery, productFilterCat, productSort]);
+  useEffect(() => { if (session) refreshLists(); }, [session, refreshLists]);
 
   // Charger automatiquement les liens d'achat existants dans l'éditeur quand un produit est sélectionné
   useEffect(() => {
@@ -394,7 +394,7 @@ export default function AdminPage() {
                 <div>Créé le: {new Date(selectedProduct.createdAt).toLocaleString()}</div>
               </div>
               <div className="mt-4">
-                <h4 className="text-sm font-semibold text-neutral-800">Liens d'achat</h4>
+                <h4 className="text-sm font-semibold text-neutral-800">Liens d’achat</h4>
                 <div className="mt-2 flex flex-wrap gap-2">
                   {(() => { try {
                     const links = selectedProduct.purchaseLinks ? JSON.parse(selectedProduct.purchaseLinks) : [];
