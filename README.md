@@ -5,8 +5,6 @@ Eco-Presents est notre réponse au défi « RSE by design » de la **NDI 2025** 
 ## Contexte du défi
 
 - **Thème**: RSE, développement – « Après le privacy by design et le security by design, que serait le RSE by design ? »
-- **Attendus**: dépôt Git public, plateforme accessible en ligne, livrables illustrant la démarche responsable.
-- **Dotations**: 1er 1000 €, 2ème 700 €, 3ème 300 € en bons cadeaux.
 - **Plateforme en production**: [www.eco-presents.com](https://www.eco-presents.com) – hébergée via Vercel + Neon et ouverte pour l’évaluation.
 
 ## RSE by design, concrètement
