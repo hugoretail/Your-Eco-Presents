@@ -1,155 +1,108 @@
-# Eco-Presents
+# Eco-Presents – NDI 2025 / Numih France
 
-## Orientation IA (moyen terme)
+Eco-Presents est notre réponse au défi « RSE by design » de la **NDI 2025** organisé avec **Numih France**, premier acteur public français spécialisé dans la transformation numérique des établissements de santé. L’objectif: démontrer qu’une plateforme de recommandations peut être éthique par conception, transparente sur l’impact et co-construite avec ses utilisateurs.
 
-- Moyen terme = 2–6 mois: consolider les briques déterministes (ANN, filtres/règles, reranker) et réduire latence/coûts; possibilité de modèle open-source auto‑hébergé si volume stable.
+## Contexte du défi
 
-Local vs cloud: possible d’héberger un modèle open-source local (ex: Llama 3.x 8B) pour réduire coûts récurrents et mieux contrôler la donnée; conso énergétique dépendra du matériel et de la charge. Tant que le trafic est faible, un LLM hébergé localement sur GPU/CPU peut être sobre et économique si bien dimensionné.
+- **Thème**: RSE, développement – « Après le privacy by design et le security by design, que serait le RSE by design ? »
+- **Attendus**: dépôt Git public, plateforme accessible en ligne, livrables illustrant la démarche responsable.
+- **Dotations**: 1er 1000 €, 2ème 700 €, 3ème 300 € en bons cadeaux.
+- **Plateforme en production**: [www.eco-presents.com](https://www.eco-presents.com) – hébergée via Vercel + Neon et ouverte pour l’évaluation.
 
-## Données: où les trouver et comment structurer
+## RSE by design, concrètement
 
-Objectif initial: petit catalogue FR (Nouvelle-Aquitaine / France) d’entreprises éco‑responsables, 50–300 produits correctement étiquetés.
+- **Sobriété numérique**: moteur de recommandation 100 % déterministe (filtres, scoring et reranking), aucune dépendance à un LLM externe pour réduire coûts, latence et empreinte carbone.
+- **Transparence des critères**: chaque produit affiche ses labels, matériaux, origine, score éco et raison de la recommandation.
+- **Curation responsable**: catalogue issu d’entreprises françaises ou européennes engagées (labels ADEME, EU Ecolabel, B-Corp, circuits courts). Aucune donnée n’est scrapée sans licence compatible.
+- **Gouvernance & sécurité**: authentification stricte pour l’espace admin, chiffrement des secrets, hébergement HDS-ready (Vercel + Neon) permettant un relais futur avec les datacenters souverains de Numih France.
+- **Participation utilisateur**: les visiteurs peuvent filtrer par budget, destinataire, intention responsable et alimentent la roadmap via leurs retours.
 
-Sources potentielles (priorité FR, zéro budget):
+## Fonctionnalités clés
 
-- Sites de labels et annuaires officiels:
-  - ADEME (répertoires, guides, fiches produits/éco‑labels)
-  - EU Ecolabel (liste de produits/services certifiés)
-  - Labels: Fairtrade/Commerce Équitable, GOTS, FSC/PEFC, B‑Corp (au niveau entreprise), Cosmébio/Ecocert, etc.
-- Annuaire d’entreprises locales et circuits courts:
-  - Chambres de commerce, plateformes régionales, annuaires bio/vrac, marketplaces locales (vérifier conditions d’usage des données)
-- Boutiques éco‑responsables (description produits, catégories, prix) avec conditions d’utilisation permettant la référence (et lien sortant):
-  - Exemples: Biocoop (infos catégories/gammes), boutiques zéro‑déchet, reconditionné (Back Market pour inspiration, mais attention droits), artisanat local (Etsy pour inspiration — respecter ToS)…
-- Open Data/Registres:
-  - INPI/SIRENE pour infos entreprise (localisation, PME), données publiques sur labels/certifications quand disponibles.
+- Page publique FR-only avec narration pédagogique sur la consommation responsable.
+- Formulaire d’intentions cadeaux → moteur `/api/recommend` qui mixe règles métiers, similarité et score éco.
+- Tableau de bord admin (`/admin`) pour importer/éditer produits (via CSV ou interface) avec attributs RSE détaillés.
+- Emails transactionnels via Nodemailer/SMTP (désactivable hors prod) pour les confirmations d’accès admin.
+- Scripts d’analyse (`scripts/*.js|ts`) pour vérifier doublons, compter produits, comparer CSV vs base.
+- Prisma + Postgres/SQLite pour tracer les évolutions et auditer la donnée produit.
 
-Important légal: respecter les conditions d’utilisation/scraping des sites tiers. Préférer:
+## Architecture & stack
 
-- Données publiques sous licence compatible ou partenariats léger (autorisation par e‑mail),
-- Référencement avec liens sortants + attribution, sans stocker de contenus protégés (texte/images) au‑delà de ce que la licence permet.
+- **Frontend**: Next.js 15 (App Router, React 19, Tailwind CSS 4, framer-motion) avec middleware d’authentification.
+- **Backend**: API routes Next.js, Prisma ORM, Postgres Neon (prod) ou SQLite (dev) et scripts Node pour l’ingestion.
+- **Auth & sécurité**: bcrypt pour le hash des mots de passe, JWT pour les sessions côté API, cookies HTTPOnly via middleware.
+- **Dev tooling**: TypeScript 5, ESLint 9, Turbopack, scripts Prisma.
 
-### Schéma produit minimal (draft)
+## Sources de données & conformité
 
+- Pipeline manuel depuis annuaires publics (ADEME, EU Ecolabel, B Lab, SIRENE) et partenariats boutiques responsables.
+- Attribution systématique: chaque produit conserve URL source et label d’origine.
+- Politique « no greenwashing »: aucune assertion n’est inventée; les champs reflètent uniquement les preuves disponibles.
+- Respect RGPD: aucune donnée personnelle sensible, traces anonymisées et rotation de secrets via `.env`/Vercel.
+
+## Accès en ligne
+
+- **Production**: [www.eco-presents.com](https://www.eco-presents.com)
+- **Observation**: version identique à la branche `main`. Les reviewers peuvent naviguer librement, consulter les API publiques et demander un accès admin sur simple email.
+
+## Installation locale
+
+```bash
+git clone https://github.com/hugoretail/Your-Eco-Presents.git
+cd Your-Eco-Presents/web
+copy .env.example .env   # sous Windows (cmd)
+# ou: cp .env.example .env
 ```
-id: string
-title: string
-description: string
-category: string[]
-price: number
-currency: EUR
-url: string
-merchant: { name: string, region: string, small_business: boolean }
-eco: {
-	certifications: string[]        // ex: EU Ecolabel, GOTS, FSC, B-Corp (entreprise)
-	materials: string[]             // ex: coton bio, bois PEFC, recyclé
-	origin_country: string          // FR, EU
-	repairability_score?: number    // 0–10 si dispo
-	second_hand?: boolean
-	packaging?: string              // recyclable, vrac, consigné
-	co2_estimate?: number           // optionnel, gCO2e si source fiable
-}
-logistics: {
-	ships_to: string[]              // FR/EU
-	delivery_time_est?: string
-}
-images?: string[]
-```
 
-### Process d’ingestion (cold‑start)
+1. Éditer `.env` :
+   - `DATABASE_URL` (ex. `file:./dev.db` ou URL Neon)
+   - `SHADOW_DATABASE_URL` (requis si Postgres + migrations)
+   - `ADMIN_EMAIL` / `ADMIN_PASSWORD` (comptes back-office)
+   - `SESSION_SECRET` (32+ caractères aléatoires)
+   - Optionnel: `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS`, `SMTP_SECURE`, `SMTP_FROM`, `SMTP_FROM_NAME`
+2. Installer les dépendances : `npm install`
+3. Synchroniser la base : `npx prisma migrate dev` (ou `npm run prisma:migrate`)
+4. (Optionnel) peupler des exemples : `npm run db:seed` ou `npm run db:import:csv`
+5. Lancer le serveur : `npm run dev`
+6. Ouvrir [http://localhost:3000](http://localhost:3000). L’espace admin est accessible via l’email/mot de passe configurés.
 
-1. Curation manuelle d’une liste d’entreprises locales conformes à la charte éco.
-2. Pour chaque boutique: sélectionner 5–20 produits cadeau‑compatibles (prix indicatif, description courte, URL).
-3. Annoter les attributs éco à partir de sources fiables (labels affichés, matériaux). Noter la source (URL) pour audit.
-4. Générer embeddings (FR/EN multilingues) sur titre+description pour la recherche sémantique.
-5. Mettre en place filtres “durs” (prix, région, label requis) + règles de diversité.
+## Scripts utiles (`web/package.json`)
 
-### Langue des données
+- `npm run dev` : Next.js + Turbopack
+- `npm run build` / `npm run start` : build et serveur de prod local
+- `npm run lint` : ESLint 9
+- `npm run prisma:generate` / `npm run prisma:migrate` / `npm run db:seed`
+- `npm run db:import:csv[:ts]` : ingérer un catalogue CSV
+- `npm run db:sync` : migrations + import + comptage
+- `npm run email:test` : vérifier la configuration SMTP
+- `npm run build:vercel` : commande utilisée sur Vercel (Prisma generate + migrate deploy + build)
 
-- FR-only front. Pour les embeddings/recherche, privilégier des modèles multilingues:
-  - text-embedding-3-small (multilingue) ou jina-embeddings-v2-base-fr (focus FR, open-source).
-- Contenu source en FR si possible pour cohérence. Les sources EN restent utilisables si les attributs sont normalisés (labels sont internationaux).
+## Déploiement (Vercel + Neon)
 
-### Score éco (v1 simple)
+- Root directory: `web/`
+- Install command: `npm ci`
+- Build command: `npm run build:vercel`
+- Runtime: Node.js 22.x
+- Variables à définir sur Vercel (Prod & Preview):
+  - `DATABASE_URL`, `SHADOW_DATABASE_URL`
+  - `SESSION_SECRET`, `ADMIN_EMAIL`, `ADMIN_PASSWORD`
+  - Secrets SMTP (`SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS`, `SMTP_SECURE`, `SMTP_FROM`, `SMTP_FROM_NAME`)
+  - Toute clé additionnelle (ex: `JWT_SECRET` si l’on externalise les tokens)
+- DNS: `www.eco-presents.com` (CNAME vers `cname.vercel-dns.com`) + apex redirigé vers Vercel.
 
-Pondération heuristique transparente, par exemple:
+## Roadmap orientée NDI 2025
 
-- +3 si certification produit (EU Ecolabel/GOTS/Fairtrade),
-- +2 si matériau recyclé/bio durable,
-- +2 si fabrication FR/EU courte distance,
-- +1 si emballage recyclable/vrac/consigné,
-- +1 si PME locale,
-- +bonus si réparabilité élevée, –malus si jetable/obsolescence évidente.
-  Afficher “pourquoi” dans la fiche pour éviter le greenwashing perçu.
+- [x] Mettre en ligne la plateforme et ouvrir le code source.
+- [x] Implémenter un moteur de recommandation sobre et auditable.
+- [ ] Étendre le catalogue à 300+ produits certifiés Nouvelle-Aquitaine.
+- [ ] Ajouter un score climat contextuel (ADEME Base Carbone) + justification utilisateur.
+- [ ] Publier des dashboards d’impact (usage, labels les plus consultés, retours utilisateurs) pour les jurés.
+- [ ] Explorer une déclinaison santé/sociale en lien avec les établissements partenaires de Numih France.
 
-## Sécurité et conformité (notes rapides)
+## En savoir plus
 
-- Ne pas inventer de claims éco: s’appuyer uniquement sur attributs présents/sourcés.
-- Mentionner les labels au niveau correct (produit vs entreprise).
-- RGPD: éviter de collecter des données personnelles sensibles; logs anonymisés.
+- Numih France : [https://numihfrance.fr](https://numihfrance.fr)
+- Page carrière Numih France : [https://careers.werecruit.io/fr/numih-france](https://careers.werecruit.io/fr/numih-france)
+- Contact projet : `hello@eco-presents.com`
 
-## Prochaines étapes
-
-- [ ] Définir la charte éco (labels acceptés, seuils, exclusions)
-- [ ] Lister 50–100 produits FR/NA avec attributs et sources
-- [ ] Implémenter embeddings + recherche locale (FAISS) et filtres
-- [ ] Prompt LLM pour: extraction d’intentions + génération d’explications
-- [ ] Évaluer sur 20 scénarios types (budget, destinataire, occasion)
-
-## Modèles et données (moyen terme)
-
-### Modèles recommandés (open‑source/local friendly)
-
-- LLM (génération/orchestration)
-
-  - Llama 3 (7–8B) Instruct: multilingue correct, quantifiable (GGUF 4–8 bits), bon compromis qualité/latence locale.
-  - Mistral 7B Instruct / Mixtral 8x7B (plus lourd, meilleure qualité, besoin GPU).
-  - Qwen 7B/14B Instruct: bonne compréhension multi‑langue, alternatives viables.
-  - Astuce: servir localement via llama.cpp/Ollama; limiter max_tokens et activer le cache.
-
-- Embeddings (recherche sémantique FR)
-
-  - jina-embeddings-v2-base-fr (orienté FR, open).
-  - bge-m3 (multilingue, robuste pour retrieval).
-  - Baseline rapide: paraphrase-multilingual-MiniLM-L12-v2 (Sentence-Transformers).
-
-- Reranker (reclassement)
-
-  - bge-reranker-large (multilingue), ou sa variante base si ressources limitées.
-
-- Index/vector DB
-  - FAISS local (zéro coût).
-  - Qdrant OSS si besoin d’API/vector store dédié.
-
-### Fine‑tuning vs RAG
-
-- Préférer RAG + règles pour la pertinence factuelle; le fine‑tuning sert surtout à la forme (ton, style, structure d’explication).
-- Si nécessaire, faire un LoRA léger (500–2k paires FR « intention → liste justifiée ») pour uniformiser la présentation.
-- En parallèle, entraîner un petit reranker (Sentence‑Transformers) avec négatifs difficiles issus de votre catalogue pour améliorer nDCG/MRR.
-
-### Jeux de données utiles (inspiration/éval)
-
-- Éco‑labels et entreprises
-  - EU Ecolabel: catalogue public de produits/services certifiés.
-  - GOTS (textile bio), Fairtrade/Commerce Équitable, FSC/PEFC (bois/papier), Cosmébio/Ecocert (cosmétiques): annuaires de titulaires.
-  - B Lab (B‑Corp): annuaire d’entreprises certifiées (niveau entreprise, pas produit).
-- Open data FR
-  - data.gouv.fr: rechercher « écolabel », « réparabilité », « circuits courts », « entreprises ».
-  - SIRENE (INSEE): infos entreprises (localisation, taille) pour tag « PME locale ».
-  - ADEME Base Carbone: facteurs d’émission (vérifier licence/conditions d’usage).
-- Produits ouverts (catégories cadeaux possibles)
-  - Open Food Facts (alimentaire), Open Beauty Facts (cosmétiques) — attributs utiles, attention aux licences et champs incomplets.
-
-Notes licence: vérifier ToS/licences; privilégier données publiques/partenariats légers; citer la source et éviter la copie d’images/textes protégés.
-
-### Sites sources à explorer (curation manuelle)
-
-- ADEME (guides/annuaires), EU Ecolabel (produits certifiés), GOTS/Fairtrade/FSC/PEFC/Cosmébio/Ecocert (recherche de titulaires).
-- B‑Corp directory (cibler entreprises locales responsables pour idées cadeaux/services).
-- Annuaire CCI/CMA Nouvelle‑Aquitaine, plateformes régionales « circuits courts ».
-- Boutiques zéro‑déchet/vrac locales (avec autorisation), reconditionné (inspiration; respecter ToS).
-
-### Stratégie d’adaptation sans dataset propre
-
-- Générer des scénarios FR (budget, destinataire, occasion) → récupérer top‑k via retrieval + filtres → labelliser automatiquement des paires (query, produits pertinents) → entraîner le reranker.
-- Produire des explications initiales avec LLM et valider manuellement un échantillon pour constituer un set de style (LoRA optionnel).
-- En prod, collecter clics/sauvegardes/rejets (anonymisés) pour affiner.
+Les sources sont disponibles dans ce dépôt Git et la plateforme en ligne reflète la dernière version de `main`, satisfaisant ainsi les livrables demandés par le défi « RSE by design ».
