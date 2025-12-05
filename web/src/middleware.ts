@@ -1,12 +1,12 @@
-import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
+import { NextResponse } from 'next/server';
 
-// Routes protégées (exiger simplement la présence d'un cookie de session)
+// Lightweight guard: if a route is in this allowlist we only check the presence of the session cookie.
 const PROTECTED_PREFIXES = ['/trouver', '/generate', '/admin', '/compte'];
 
 export function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
-  // Autoriser sans contrôle: assets, API, pages publiques auth
+  // Allow assets and public auth pages to bypass the guard so they stay cacheable/CDN-friendly.
   if (
     pathname.startsWith('/api') ||
     pathname.startsWith('/_next') ||

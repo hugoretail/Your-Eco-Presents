@@ -7,7 +7,7 @@ export const dynamic = 'force-dynamic';
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    // Minimal validation/coercion
+    // Coerce every field to the shape expected by the scoring engine to keep it deterministic server side.
     const prefs: Prefs = {
       recipient: String(body.recipient || ''),
       occasion: String(body.occasion || ''),
@@ -25,6 +25,7 @@ export async function POST(req: NextRequest) {
       personInfo: typeof body.personInfo === 'string' ? body.personInfo : '',
     };
 
+    // Order by recency to surface the latest curation work when scores tie.
     const products = await prisma.product.findMany({ orderBy: { createdAt: 'desc' } });
     const ideas = recommend(prefs, products, 5);
     return NextResponse.json({ ideas });

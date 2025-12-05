@@ -45,9 +45,9 @@ export default function HomePage() {
   }, [videoIndex]);
 
   return (
-  <div className="relative">
-      {/* HERO */}
-  <section id="hero" className="relative overflow-hidden w-full py-24 md:py-28 min-h-[70vh] md:min-h-[85vh] full-bleed">
+    <div className="relative">
+      {/* Hero section driven by two looping videos to keep the motion seamless. */}
+    <section id="hero" className="relative overflow-hidden w-full py-24 md:py-28 min-h-[70vh] md:min-h-[85vh] full-bleed">
         {/* Fond vidéo/GIF onirique + overlay lisible */}
         <div className="absolute inset-0 bg-[url('/team/placeholder.jpg')] bg-cover bg-center" aria-hidden />
         {/* Double video stack for seamless cross-fade */}
@@ -98,7 +98,7 @@ export default function HomePage() {
         </div>
       </section>
 
-  {/* HOW IT WORKS */}
+  {/* How it works section keeps the messaging consistent with the tri-step form. */}
   <section id="comment-ca-marche" className="relative z-10 mx-auto w-full max-w-6xl py-16 px-4 sm:px-6 space-y-10 flex flex-col items-center">
   <motion.h2 initial={{opacity:0,y:20}} whileInView={{opacity:1,y:0}} viewport={{once:true}} className="text-2xl sm:text-3xl md:text-4xl font-bold text-center text-neutral-900 mb-6">Comment ça marche ?</motion.h2>
         <div className="grid md:grid-cols-3 gap-10">
@@ -122,14 +122,13 @@ export default function HomePage() {
         <div className="w-full max-w-3xl mx-auto"><DataTransparency /></div>
       </section>
 
-      {/* Diagonal ambient between sections (background, no layout impact) */}
+        {/* Ambient canvas between sections so the layout breathes without extra DOM depth. */}
   <DiagonalAmbient />
 
-      {/* FEATURES / EMOTION */}
+        {/* Feature grid mixing proof points (pertinence, rapidité) and emotional benefits. */}
   <section id="pourquoi" className="relative z-10 mx-auto w-full max-w-6xl px-4 sm:px-6 pb-16 space-y-10 flex flex-col items-center">
   <motion.h2 initial={{opacity:0,y:20}} whileInView={{opacity:1,y:0}} viewport={{once:true}} className="text-2xl sm:text-3xl md:text-4xl font-bold text-center text-neutral-900 mb-6">Pourquoi ça fait la différence ?</motion.h2>
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {/* Remplacement des emojis par des icônes Heroicons ou SVG stylisés */}
           {[
             {icon: <svg width="32" height="32" fill="none" viewBox="0 0 32 32"><circle cx="16" cy="16" r="16" fill="#a7f3d0"/><path d="M10 18c0-2.5 2-4.5 4.5-4.5S19 15.5 19 18" stroke="#065f46" strokeWidth="2" strokeLinecap="round"/></svg>, title:'Créativité guidée', text:'Des idées inattendues mais cohérentes avec la personnalité.'},
             {icon: <svg width="32" height="32" fill="none" viewBox="0 0 32 32"><rect width="32" height="32" rx="16" fill="#bbf7d0"/><path d="M10 16h12M16 10v12" stroke="#065f46" strokeWidth="2" strokeLinecap="round"/></svg>, title:'Contextualisation', text:'Chaque piste explique le “pourquoi elle” pour renforcer l’intention.'},
@@ -146,7 +145,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* CTA FINAL */}
+      {/* Final CTA echoes the hero promise and keeps the reader in the same scroll context. */}
   <section className="relative z-10 mx-auto w-full max-w-5xl px-6 pb-28">
         <motion.div initial={{opacity:0,y:30}} whileInView={{opacity:1,y:0}} viewport={{once:true}} className="rounded-3xl bg-neutral-900 text-white p-12 md:p-16 relative overflow-hidden">
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_30%,rgba(255,255,255,.12),transparent_60%)]" />

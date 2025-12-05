@@ -5,6 +5,7 @@ type ConfirmParams = {
   supportEmail?: string;
 };
 
+// Keep emails resilient by sanitizing every user provided fragment.
 function escapeHtml(s: string) {
   return s.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]!));
 }

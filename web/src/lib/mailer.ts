@@ -27,7 +27,7 @@ function isSmtpConfigured() {
 
 export async function sendMail({ to, subject, html, text, fromOverride }: MailInput) {
   if (!isSmtpConfigured()) {
-    // Fallback: log to server console in development if SMTP is not configured
+    // We still surface the payload in dev so product/ops teams can verify flows without a real SMTP relay.
     console.warn('[mailer] SMTP not configured. Logging email locally.');
     console.info({ to, subject, html, text });
     return { ok: false, logged: true };
@@ -39,6 +39,7 @@ export async function sendMail({ to, subject, html, text, fromOverride }: MailIn
   const pass = process.env.SMTP_PASS as string;
   const secure = process.env.SMTP_SECURE === 'true' || port === 465;
 
+  // A fresh transporter per call keeps things stateless between serverless invocations.
   const transporter = nodemailer.createTransport({
     host,
     port,
